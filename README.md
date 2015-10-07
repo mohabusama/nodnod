@@ -65,7 +65,7 @@ The `examples` directory includes scripts that could be used to illustrate inter
 
 ## Tutorial
 
-1. Config
+### Config
 
 Create a sample `config.json` file. Here, we will run a cluster of two nodes.
 
@@ -78,7 +78,7 @@ Create a sample `config.json` file. Here, we will run a cluster of two nodes.
     }
 
 
-2. Servers
+### Servers
 
 Start the first server
 
@@ -99,7 +99,7 @@ In another terminal, start the second server
     INFO[0000] Established connection with node: 127.0.0.1:7070 
     INFO[0004] Accepted connection with client: 127.0.0.1:63162 
 
-3. Run example
+### Run example
 
 The next step is to run one of the `examples` scripts
 
@@ -155,6 +155,7 @@ or run `nodnod_concurrent.go`. Here we will make 200 stats requests, with concur
 ## TODO
 
 - Tests
+- Client
 - PUSH mode
 - More realistic benchmarking
 - Serve static HTML5 demo
