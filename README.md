@@ -6,13 +6,13 @@ In case of multinode cluster deployment, the NodNod cluster is *masterless*, so 
 
 ## How does it work?
 
-Assuming you already have a cluster composed of mutliple servers. Start by installing and running **NodNod** on each server with configuration file specifying all other **NodNod** peers ([see Config file](#Config-file)).
+Assuming you already have a cluster composed of mutliple servers. Start by installing and running **NodNod** on each server with configuration file specifying all other **NodNod** peers ([see Config file](#config-file)).
 
 Once a **NodNod** starts, it will start connecting to other peers via a websocket connection. The reason behind establishing those connections; is that NodNod aims at constructing a *masterless* stats collector cluster. So, **any** NodNod server can stream stats for the whole cluster instead of just a single node. 
 
 This setup also eliminates the need of a master/controller node, allowing loadbalanced setup while serving large number of clients.
 
-Please check the [Tutorial](#Tutorial) section to see **NodNod** in action.
+Please check the [Tutorial](#tutorial) section to see **NodNod** in action.
 
 ## Installation
 
