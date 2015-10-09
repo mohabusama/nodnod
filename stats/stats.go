@@ -119,7 +119,7 @@ func GetAllStats(allNodes []*Node) ([]NodeStats, error) {
 }
 
 func getCpuUsage() (float64, error) {
-	if res, err := cpu.CPUPercent(50*time.Millisecond, false); err == nil {
+	if res, err := cpu.CPUPercent(0, false); err == nil {
 		return res[0], nil
 	}
 

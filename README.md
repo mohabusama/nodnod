@@ -2,7 +2,17 @@
 
 NodNod is a websocket server that can stream node stats to any websocket client. NodNod can be deployed as single or multinode cluster.
 
-In case of multinode cluster deployment, each NodNod server should stream stats for all connected/live nodes in the cluster straight to the client.
+In case of multinode cluster deployment, the NodNod cluster is *masterless*, so each NodNod server should stream stats for all connected/live NodNod peers in the cluster straight to the client.
+
+## How does it work?
+
+Assuming you already have a cluster composed of mutliple servers. Start by installing and running **NodNod** on each server with configuration file specifying all other **NodNod** peers ([see Config file](#Config-file)).
+
+Once a **NodNod** starts, it will start connecting to other peers via a websocket connection. The reason behind establishing those connections; is that NodNod aims at constructing a *masterless* stats collector cluster. So, **any** NodNod server can stream stats for the whole cluster instead of just a single node. 
+
+This setup also eliminates the need of a master/controller node, allowing loadbalanced setup while serving large number of clients.
+
+Please check the [Tutorial](#Tutorial) section to see **NodNod** in action.
 
 ## Installation
 
@@ -26,7 +36,7 @@ A NodNod server requires a config file to start.
 
 ### Config file
 
-The config file is a `json` file which describes the existing nodes in the cluster.
+The config file is a `json` file which describes the existing **NodNod** nodes/peers in the cluster.
 
     {
         "nodes": [
@@ -39,7 +49,7 @@ The config file is a `json` file which describes the existing nodes in the clust
 
 ### Startup
 
-Start NodNod server by passing `config` file path and `listen` address in the form `"<ip>:<port>"`
+Start NodNod server by passing `config` file path and `listen` address in the form `"<ip>:<port>"`.
 
     Usage: nodnod [OPTIONS]
     
@@ -65,9 +75,7 @@ The `examples` directory includes scripts that could be used to illustrate inter
 
 ## Tutorial
 
-### Config
-
-Create a sample `config.json` file. Here, we will run a cluster of two nodes.
+First, create a sample `config.json` file. Here, we will run a cluster of two nodes.
 
     {
         "nodes": [
@@ -77,10 +85,7 @@ Create a sample `config.json` file. Here, we will run a cluster of two nodes.
         "mode": "pull"
     }
 
-
-### Servers
-
-Start the first server
+Second, start the first server
 
     $ nodnod --listen 127.0.0.1:7070 --config <path-to-config.json>
     
@@ -99,14 +104,12 @@ In another terminal, start the second server
     INFO[0000] Established connection with node: 127.0.0.1:7070 
     INFO[0004] Accepted connection with client: 127.0.0.1:63162 
 
-### Run example
-
 The next step is to run one of the `examples` scripts
 
     $ go run nodnod_dial.go
     
     INFO[0000] Received response from node:127.0.0.1:7070   
-    INFO[0000] Duration:160.745551ms                        
+    INFO[0000] Duration:27.499909ms                        
     {
         "host": "127.0.0.1:7070",
         "nodes": {
@@ -136,7 +139,7 @@ The next step is to run one of the `examples` scripts
         "error": ""
     }
 
-or run `nodnod_concurrent.go`. Here we will make 200 stats requests, with concurrency of 20 requests, and we are validating returned stats against 2 nodes. 
+Or run `nodnod_concurrent.go`. Here we will make 200 stats requests, with concurrency of 20 requests, and we are validating returned stats against 2 nodes. 
 
     $ go run nodnod_concurrent.go --concurrent 20 --number 200 --nodes 2
 
@@ -144,7 +147,7 @@ or run `nodnod_concurrent.go`. Here we will make 200 stats requests, with concur
     INFO[0000] Launched all requests!                       
     INFO[0000] In progress ...                              
     INFO[0015] ====SUMMARY====                              
-    INFO[0015] Total Duration:15.662128837s                 
+    INFO[0015] Total Duration:3.632180036s                 
     INFO[0015] Total number of requests:200                 
     INFO[0015] Total number of responses:200                
     INFO[0015] Total number of missing responses:0          

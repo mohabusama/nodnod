@@ -28,7 +28,7 @@ func serveWebsocket(w http.ResponseWriter, req *http.Request) {
 
 	defer conn.Close()
 
-	log.Info("Accepted connection with client: ", conn.RemoteAddr())
+	log.Info("Accepted connection from client: ", conn.RemoteAddr())
 
 	for {
 		var mreq stats.MessageRequest
@@ -64,7 +64,7 @@ func serveWebsocket(w http.ResponseWriter, req *http.Request) {
 				log.Warn("Received unknown request type:", mreq.Type)
 			}
 		} else {
-			log.Errorf("Failed to receive JSON message: %s", err)
+			log.Debug("Terminated connection with client:", err)
 			break
 		}
 	}
