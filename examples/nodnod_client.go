@@ -1,5 +1,5 @@
 // Example file using NodNod Client to stat a NodNod cluster.
-package examples
+package main
 
 import (
 	"encoding/json"

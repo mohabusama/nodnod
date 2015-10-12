@@ -1,5 +1,5 @@
 // Example of using raw Gorilla websocket dialer to stat NodNod server.
-package examples
+package main
 
 import (
 	"encoding/json"

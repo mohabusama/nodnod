@@ -1,5 +1,5 @@
 // Example of creating requests load on a NodNod server
-package examples
+package main
 
 import (
 	"flag"
