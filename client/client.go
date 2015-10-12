@@ -45,6 +45,7 @@ func (c *Client) Connect() error {
 	}
 
 	c.conn = conn
+	c.connected = true
 	c.response = make(chan stats.MessageResponse, 1)
 	c.err = make(chan error, 1)
 
