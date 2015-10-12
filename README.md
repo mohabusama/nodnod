@@ -1,5 +1,7 @@
 # NodNod
 
+[![Build Status](https://travis-ci.org/mohabusama/nodnod.svg?branch=master)](https://travis-ci.org/mohabusama/nodnod)
+
 NodNod is a websocket server that can stream node stats to any websocket client. NodNod can be deployed as single or multinode cluster.
 
 In case of multinode cluster deployment, the NodNod cluster is *masterless*, so each NodNod server should stream stats for all connected/live NodNod peers in the cluster straight to the client.

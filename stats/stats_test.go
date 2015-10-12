@@ -31,7 +31,7 @@ func TestGetStats(t *testing.T) {
 		t.Error("NodeStats had errors", nodeStats.Error)
 	}
 
-	if nodeStats.CPUUsed <= 0 || nodeStats.CPUUsed > 100 {
+	if nodeStats.CPUUsed > 100 {
 		t.Error("Invalid CPUUsed: ", nodeStats.CPUUsed)
 	}
 
