@@ -72,11 +72,11 @@ The client package can be used to connect and stat a **NodNod** cluster.
 
     import "github.com/mohabusama/nodnod/client"
 
-Please check [nodnod_client.go](https://github.com/mohabusama/nodnod/blob/master/examples/nodnod_client.go) example to see the client usage.
+Please check [nodnod_client.go](https://github.com/mohabusama/nodnod/blob/master/_examples/nodnod_client.go) example to see the client usage.
 
 ### Examples
 
-The `examples` directory includes scripts that could be used to illustrate interaction with a NodNod server.
+The `_examples` directory includes scripts that could be used to illustrate interaction with a NodNod server.
 
 - **nodnod_client.go**: Uses the client package to stat a NodNod cluster.
 - **nodnod_dial.go**: Connects to NodNod server, and continously requests server stats with the specified duration. Uses raw Gorilla websocket.
@@ -113,7 +113,7 @@ In another terminal, start the second server
     INFO[0000] Established connection with node: 127.0.0.1:7070 
     INFO[0004] Accepted connection with client: 127.0.0.1:63162 
 
-The next step is to run one of the `examples` scripts
+The next step is to run one of the `_examples` scripts
 
     $ go run nodnod_dial.go
     
