@@ -1,4 +1,5 @@
-package main
+// Example of creating requests load on a NodNod server
+package examples
 
 import (
 	"flag"
@@ -56,7 +57,7 @@ func main() {
 	wg.Add(*flNumber)
 
 	for i := 0; i < *flConcurrent; i++ {
-		go nodnodClient(&u, &wg, chRequests, chResponses, i)
+		go startClient(&u, &wg, chRequests, chResponses, i)
 	}
 
 	log.Info("Launched all goroutines!")
@@ -84,7 +85,7 @@ func main() {
 	printSummary(chResponses, time.Since(start))
 }
 
-func nodnodClient(url *url.URL, wg *sync.WaitGroup, chRequests chan stats.MessageRequest,
+func startClient(url *url.URL, wg *sync.WaitGroup, chRequests chan stats.MessageRequest,
 	chResponse chan *Response, id int) {
 
 	dialer := websocket.Dialer{}

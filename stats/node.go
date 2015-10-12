@@ -41,7 +41,7 @@ func (this *Node) Connect() {
 	}
 
 	this.conn = conn
-	defer this.disconnect()
+	defer this.Disconnect()
 
 	this.Status = true
 	this.mutex = new(sync.Mutex)
@@ -98,7 +98,7 @@ func (this *Node) Stat() error {
 	return nil
 }
 
-func (this *Node) disconnect() {
+func (this *Node) Disconnect() {
 	log.Info("Terminating node:", this.Address)
 
 	defer func() {
