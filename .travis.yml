@@ -7,6 +7,7 @@ go:
 install:
   - go get github.com/Sirupsen/logrus
   - go get github.com/gorilla/websocket
+  - go get github.com/shirou/gopsutil
 
 scripts:
-  - go test ./...
+  - go test -v ./...
