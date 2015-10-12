@@ -66,16 +66,25 @@ Start NodNod server by passing `config` file path and `listen` address in the fo
       -version
             Show version!
 
+## Client
+
+The client package can be used to connect and stat a **NodNod** cluster.
+
+    import "github.com/mohabusama/nodnod/client"
+
+Please check [nodnod_client.go](https://github.com/mohabusama/nodnod/blob/master/examples/nodnod_client.go) example to see the client usage.
+
 ### Examples
 
 The `examples` directory includes scripts that could be used to illustrate interaction with a NodNod server.
 
-- **nodnod_dial.go**: Connects to NodNod server, and continously requests server stats with the specified duration.
-- **nodnod_concurrent.go**: Runs a concurrency test against a NodNod server/cluster.
+- **nodnod_client.go**: Uses the client package to stat a NodNod cluster.
+- **nodnod_dial.go**: Connects to NodNod server, and continously requests server stats with the specified duration. Uses raw Gorilla websocket.
+- **nodnod_concurrent.go**: Runs a concurrency test against a NodNod server/cluster. Uses raw Gorilla websocket.
 
 ## Tutorial
 
-First, create a sample `config.json` file. Here, we will run a cluster of two nodes.
+**First**, create a sample `config.json` file. Here, we will run a cluster of two nodes.
 
     {
         "nodes": [
@@ -85,7 +94,7 @@ First, create a sample `config.json` file. Here, we will run a cluster of two no
         "mode": "pull"
     }
 
-Second, start the first server
+**Second**, start the first server
 
     $ nodnod --listen 127.0.0.1:7070 --config <path-to-config.json>
     
@@ -158,7 +167,6 @@ Or run `nodnod_concurrent.go`. Here we will make 200 stats requests, with concur
 ## TODO
 
 - Tests
-- Client
 - PUSH mode
 - More realistic benchmarking
 - Serve static HTML5 demo
