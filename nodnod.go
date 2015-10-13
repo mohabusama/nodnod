@@ -10,16 +10,19 @@ import (
 )
 
 const (
-	VERSION    = "0.1"
-	configPath = "./conf/conf.json"
+	VERSION     = "0.1"
+	CONFIG_PATH = "./conf/conf.json"
 )
 
 var (
 	flHelp    = flag.Bool("help", false, "Print help!")
 	flAddress = flag.String("listen", "127.0.0.1:7070",
 		"Websocket service listen address")
-	flConfigPath = flag.String("config", configPath, "Path to configuration path.")
-	flVersion    = flag.Bool("version", false, "Show version!")
+	flConfigPath = flag.String("config", CONFIG_PATH, "Path to configuration path.")
+	flName       = flag.String("name", "",
+		"Name of this NodNod server. Default is Host name.")
+
+	flVersion = flag.Bool("version", false, "Show version!")
 
 	flDebug = flag.Bool("debug", false, "Set logging level to DEBUG!")
 
@@ -50,6 +53,11 @@ func main() {
 		return
 	}
 
+	if *flName == "" {
+		*flName, _ = os.Hostname()
+		log.Warn("Using hostname as NodNod name:", *flName)
+	}
+
 	// 2. Load and validate config
 	err := loadConfig()
 	if err != nil {
@@ -66,7 +74,7 @@ func main() {
 	// 4. Launch server
 	http.HandleFunc("/", serveWebsocket)
 
-	log.Info("Starting NodNod websocket server:", *flAddress)
+	log.Infof("Starting NodNod websocket server: [%s : %s]", *flName, *flAddress)
 
 	err = http.ListenAndServe(*flAddress, nil)
 	if err != nil {

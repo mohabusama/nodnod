@@ -39,12 +39,12 @@ type MessageRequest struct {
 	StatType int `json:"statType"`
 }
 
-type AllStats map[string]NodeStats
+type Stats map[string]NodeStats
 
 type MessageResponse struct {
 	Host string `json:"host"`
 
-	Nodes AllStats `json:"nodes"`
+	Nodes Stats `json:"nodes"`
 
 	Error string `json:"error"`
 }

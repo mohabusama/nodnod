@@ -21,6 +21,10 @@ Please check the [Tutorial](#tutorial) section to see **NodNod** in action.
 
     go get github.com/mohabusama/nodnod
 
+For running tests
+
+    go test ./...
+
 ## Stats
 
 NodNod is using [Gorilla Websocket](https://github.com/gorilla/websocket) for websocket server implementation and [gopsutil](https://github.com/shirou/gopsutil) for stats gathering. Current gathered stats are:
@@ -52,7 +56,7 @@ The config file is a `json` file which describes the existing **NodNod** nodes/p
 
 ### Startup
 
-Start NodNod server by passing `config` file path and `listen` address in the form `"<ip>:<port>"`.
+Start NodNod server by passing `config` file path, `listen` address in the form `"<ip>:<port>"` and a `name` which will identify this NodNod server within the cluster (the default `name` is the *hostname*).
 
     Usage: nodnod [OPTIONS]
     
@@ -66,6 +70,8 @@ Start NodNod server by passing `config` file path and `listen` address in the fo
             Print help!
       -listen string
             Websocket service listen address (default "127.0.0.1:7070")
+      -name string
+        Name of this NodNod server. Default is Host name.
       -version
             Show version!
 
@@ -99,9 +105,9 @@ The `_examples` directory includes scripts that could be used to illustrate inte
 
 **Second**, start the first server
 
-    $ nodnod --listen 127.0.0.1:7070 --config <path-to-config.json>
+    $ nodnod --listen 127.0.0.1:7070 --config <path-to-config.json> --name cartman
     
-    INFO[0000] Starting NodNod websocket server:127.0.0.1:7070 
+    INFO[0000] Starting NodNod websocket server: [cartman : 127.0.0.1:7070]
     INFO[0000] Starting discovery service                   
     WARN[0000] Failed to connect to node: 127.0.0.1:7071. Error: dial tcp 127.0.0.1:7071: getsockopt: connection refused 
     INFO[0000] Accepted connection with client: 127.0.0.1:63161 
@@ -109,9 +115,9 @@ The `_examples` directory includes scripts that could be used to illustrate inte
 
 In another terminal, start the second server
 
-    $ nodnod --listen 127.0.0.1:7071 --config <path-to-config.json>
+    $ nodnod --listen 127.0.0.1:7071 --config <path-to-config.json> --name kenny
     
-    INFO[0000] Starting NodNod websocket server: 127.0.0.1:7071 
+    INFO[0000] Starting NodNod websocket server: [kenny : 127.0.0.1:7071]
     INFO[0000] Starting discovery service
     INFO[0000] Established connection with node: 127.0.0.1:7070 
     INFO[0004] Accepted connection with client: 127.0.0.1:63162 

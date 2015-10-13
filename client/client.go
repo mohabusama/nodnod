@@ -14,8 +14,9 @@ import (
 type Client struct {
 	sync.Mutex
 
+	Server string
+
 	conn      *websocket.Conn
-	server    string
 	connected bool
 	response  chan stats.MessageResponse
 	err       chan error
@@ -24,8 +25,7 @@ type Client struct {
 // Create a new client.
 func NewClient(server string) *Client {
 	return &Client{
-		server:    server,
-		connected: false,
+		Server: server,
 	}
 }
 
@@ -35,7 +35,7 @@ func (c *Client) Connect() error {
 		return nil
 	}
 
-	u := url.URL{Scheme: "ws", Host: c.server, Path: "/"}
+	u := url.URL{Scheme: "ws", Host: c.Server, Path: "/"}
 
 	dialer := websocket.Dialer{}
 
@@ -49,19 +49,50 @@ func (c *Client) Connect() error {
 	c.response = make(chan stats.MessageResponse, 1)
 	c.err = make(chan error, 1)
 
-	go c.listener()
+	go c.read()
 
 	return nil
 }
 
-// Get all stats of NodNod cluster.
-func (c *Client) Stat() (stats.AllStats, error) {
+// Get stats of *only* connected NodNod server.
+func (c *Client) Stat() (stats.Stats, error) {
+	return c.stat(stats.STAT)
+}
 
+// Get stats of all NodNod servers/cluster.
+func (c *Client) StatAll() (stats.Stats, error) {
+	return c.stat(stats.STATALL)
+}
+
+// Check if client is connected.
+func (c *Client) Connected() bool {
+	return c.connected
+}
+
+// Disconnect client from NodNod server.
+func (c *Client) Disconnect() {
+	if c.connected == false {
+		return
+	}
+
+	c.conn.Close()
+	c.connected = false
+}
+
+func (c *Client) stat(reqType int) (stats.Stats, error) {
 	mreq := stats.MessageRequest{
-		Type:     stats.STATALL,
+		Type:     reqType,
 		StatType: stats.ALL,
 	}
 
+	if mresp, err := c.write(mreq); err == nil {
+		return mresp.Nodes, nil
+	} else {
+		return nil, err
+	}
+}
+
+func (c *Client) write(mreq stats.MessageRequest) (*stats.MessageResponse, error) {
 	c.Lock()
 	if err := c.conn.WriteJSON(&mreq); err != nil {
 		c.Unlock()
@@ -80,7 +111,7 @@ func (c *Client) Stat() (stats.AllStats, error) {
 				return nil, errors.New(fmt.Sprintf("Stat failed: %s", resp.Error))
 			}
 			// All good
-			return resp.Nodes, nil
+			return &resp, nil
 		case err := <-c.err:
 			return nil, err
 		case <-timeout:
@@ -89,23 +120,8 @@ func (c *Client) Stat() (stats.AllStats, error) {
 	}
 }
 
-// Check if client is connected.
-func (c *Client) Connected() bool {
-	return c.connected
-}
-
-// Disconnect client from NodNod server.
-func (c *Client) Disconnect() {
-	if c.connected == false {
-		return
-	}
-
-	c.conn.Close()
-	c.connected = false
-}
-
 // Establishes read loop to handle any response.
-func (c *Client) listener() {
+func (c *Client) read() {
 	defer c.Disconnect()
 
 	for {

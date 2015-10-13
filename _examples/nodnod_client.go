@@ -29,7 +29,7 @@ func main() {
 	count := 0
 
 	for {
-		if allStats, err := nodnodClient.Stat(); err != nil {
+		if allStats, err := nodnodClient.StatAll(); err != nil {
 			log.Error("Failed to get stats:", err)
 		} else {
 			prettyPrint(allStats)
@@ -47,7 +47,7 @@ func main() {
 	}
 }
 
-func prettyPrint(allStats stats.AllStats) {
+func prettyPrint(allStats stats.Stats) {
 	if prettyPrint, err := json.MarshalIndent(allStats, "", "    "); err == nil {
 		fmt.Println(string(prettyPrint))
 	} else {
