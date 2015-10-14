@@ -7,12 +7,6 @@ import (
 func TestGetStats(t *testing.T) {
 	currentAddress := "127.0.0.1:7070"
 
-	// CPU activity
-	go func() {
-		for {
-		}
-	}()
-
 	// Call to CPUPercent to avoid 0 CPUUsage on first call!
 	GetStats(currentAddress)
 
