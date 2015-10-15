@@ -5,20 +5,20 @@ import (
 )
 
 func TestGetStats(t *testing.T) {
-	currentAddress := "127.0.0.1:7070"
+	currentName := "stan"
 
 	// Call to CPUPercent to avoid 0 CPUUsage on first call!
-	GetStats(currentAddress)
+	GetStats(currentName)
 
-	nodeStats, err := GetStats(currentAddress)
+	nodeStats, err := GetStats(currentName)
 
 	if err != nil {
 		t.Fatal("Failed to GetStats!", err)
 	}
 
-	if nodeStats.Address != currentAddress {
+	if nodeStats.Name != currentName {
 		t.Errorf("Invalid NodeStats address. Got: %s, Expected: %s",
-			nodeStats.Address, currentAddress)
+			nodeStats.Name, currentName)
 	}
 
 	if nodeStats.Error != "" {

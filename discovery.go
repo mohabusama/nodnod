@@ -11,7 +11,7 @@ func discover() {
 	// Loop to make sure we keep all nodes connected!
 	for {
 		for _, node := range globalNodes {
-			if node.Status == true {
+			if node.Connected() == true {
 				continue
 			}
 

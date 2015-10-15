@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	log "github.com/Sirupsen/logrus"
-	"github.com/mohabusama/nodnod/stats"
 	"io/ioutil"
 )
 
@@ -40,10 +39,7 @@ func loadNodes() error {
 			continue
 		}
 
-		node := new(stats.Node)
-		node.Address = n
-		node.Status = false
-
+		node := newNode(n)
 		globalNodes = append(globalNodes, node)
 	}
 

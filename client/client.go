@@ -2,8 +2,6 @@
 package client
 
 import (
-	"errors"
-	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/mohabusama/nodnod/stats"
 	"net/url"
@@ -41,7 +39,7 @@ func (c *Client) Connect() error {
 
 	conn, _, err := dialer.Dial(u.String(), nil)
 	if err != nil {
-		return err
+		return &ConnectionErr{err}
 	}
 
 	c.conn = conn
@@ -56,11 +54,19 @@ func (c *Client) Connect() error {
 
 // Get stats of *only* connected NodNod server.
 func (c *Client) Stat() (stats.Stats, error) {
+	if c.connected == false {
+		return nil, &NotConnectedErr{}
+	}
+
 	return c.stat(stats.STAT)
 }
 
 // Get stats of all NodNod servers/cluster.
 func (c *Client) StatAll() (stats.Stats, error) {
+	if c.connected == false {
+		return nil, &NotConnectedErr{}
+	}
+
 	return c.stat(stats.STATALL)
 }
 
@@ -108,14 +114,14 @@ func (c *Client) write(mreq stats.MessageRequest) (*stats.MessageResponse, error
 		select {
 		case resp := <-c.response:
 			if resp.Error != "" {
-				return nil, errors.New(fmt.Sprintf("Stat failed: %s", resp.Error))
+				return nil, &StatFailedErr{resp.Error}
 			}
 			// All good
 			return &resp, nil
 		case err := <-c.err:
 			return nil, err
 		case <-timeout:
-			return nil, errors.New("Request timed out!")
+			return nil, &TimeoutErr{}
 		}
 	}
 }
@@ -130,6 +136,7 @@ func (c *Client) read() {
 		if err := c.conn.ReadJSON(&mresp); err == nil {
 			c.response <- mresp
 		} else {
+			c.err <- err
 			break
 		}
 	}

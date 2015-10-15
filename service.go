@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"github.com/mohabusama/nodnod/stats"
@@ -13,8 +12,12 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 8192,
 }
 
+type WebsocketHandler struct {
+	http.Handler
+}
+
 // Handle websocket connections from clients.
-func serveWebsocket(w http.ResponseWriter, req *http.Request) {
+func (this *WebsocketHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
@@ -33,7 +36,7 @@ func serveWebsocket(w http.ResponseWriter, req *http.Request) {
 	for {
 		var mreq stats.MessageRequest
 		mresp := stats.MessageResponse{
-			Host:  *flAddress,
+			Host:  *flName,
 			Error: "",
 			Nodes: map[string]stats.NodeStats{},
 		}
@@ -41,9 +44,6 @@ func serveWebsocket(w http.ResponseWriter, req *http.Request) {
 		if err := conn.ReadJSON(&mreq); err == nil {
 
 			switch mreq.Type {
-			case stats.DISCOVERY:
-				// Handle discovery
-				log.Info("Got discovery request")
 			case stats.STAT:
 				getCurrentNodeStat(&mresp)
 				// Send response message
@@ -71,13 +71,13 @@ func serveWebsocket(w http.ResponseWriter, req *http.Request) {
 }
 
 func getCurrentNodeStat(mresp *stats.MessageResponse) {
-	if currentStat, err := stats.GetStats(*flAddress); err == nil {
+	if currentStat, err := stats.GetStats(*flName); err == nil {
 		log.Debug("Current stat:", currentStat)
 
-		mresp.Nodes[*flAddress] = currentStat
+		mresp.Nodes[*flName] = currentStat
 	} else {
 		log.Error("Failed to get node stats:", err)
-		mresp.Error = fmt.Sprintf("%s", err)
+		mresp.Error = err.Error()
 	}
 }
 
@@ -86,9 +86,9 @@ func getAllNodesStats(mresp *stats.MessageResponse) {
 		return
 	}
 
-	if allStats, err := stats.GetAllStats(globalNodes); err == nil {
+	if allStats, err := collect(); err == nil {
 		for _, nodeStat := range allStats {
-			mresp.Nodes[nodeStat.Address] = nodeStat
+			mresp.Nodes[nodeStat.Name] = nodeStat
 		}
 	} else {
 		mresp.Error = err.Error()

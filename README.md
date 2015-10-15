@@ -112,6 +112,7 @@ The `_examples` directory includes scripts that could be used to illustrate inte
     WARN[0000] Failed to connect to node: 127.0.0.1:7071. Error: dial tcp 127.0.0.1:7071: getsockopt: connection refused 
     INFO[0000] Accepted connection with client: 127.0.0.1:63161 
     INFO[0005] Established connection with node: 127.0.0.1:7071 
+    INFO[0005] Connected to node: [kenny : 127.0.0.1:7071]
 
 In another terminal, start the second server
 
@@ -120,6 +121,7 @@ In another terminal, start the second server
     INFO[0000] Starting NodNod websocket server: [kenny : 127.0.0.1:7071]
     INFO[0000] Starting discovery service
     INFO[0000] Established connection with node: 127.0.0.1:7070 
+    INFO[0000] Connected to node: [cartman : 127.0.0.1:7070]
     INFO[0004] Accepted connection with client: 127.0.0.1:63162 
 
 The next step is to run one of the `_examples` scripts
@@ -129,10 +131,10 @@ The next step is to run one of the `_examples` scripts
     INFO[0000] Received response from node:127.0.0.1:7070   
     INFO[0000] Duration:27.499909ms                        
     {
-        "host": "127.0.0.1:7070",
+        "host": "cartman",
         "nodes": {
-            "127.0.0.1:7070": {
-                "address": "127.0.0.1:7070",
+            "cartman": {
+                "name": "cartman",
                 "cpuUsed": 5,
                 "diskTotal": 249769419776,
                 "diskUsed": 66792268800,
@@ -142,8 +144,8 @@ The next step is to run one of the `_examples` scripts
                 "memoryUsedPercent": 66.35499000549316,
                 "error": ""
             },
-            "127.0.0.1:7071": {
-                "address": "127.0.0.1:7071",
+            "kenny": {
+                "name": "kenny",
                 "cpuUsed": 9.090909090909092,
                 "diskTotal": 249769419776,
                 "diskUsed": 66792268800,

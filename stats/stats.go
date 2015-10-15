@@ -5,14 +5,12 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
-	"time"
 )
 
 const (
 	// Message types
-	DISCOVERY = 0
-	STAT      = 1
-	STATALL   = 2
+	STAT    = 0
+	STATALL = 1
 
 	// Stats
 	ALL = 0
@@ -22,7 +20,7 @@ const (
 )
 
 type NodeStats struct {
-	Address           string  `json:"address"`
+	Name              string  `json:"name"`
 	CPUUsed           float64 `json:"cpuUsed"`
 	DiskTotal         uint64  `json:"diskTotal"`
 	DiskUsed          uint64  `json:"diskUsed"`
@@ -49,8 +47,8 @@ type MessageResponse struct {
 	Error string `json:"error"`
 }
 
-func GetStats(currentAddress string) (NodeStats, error) {
-	nodeStats := NodeStats{Address: currentAddress}
+func GetStats(name string) (NodeStats, error) {
+	nodeStats := NodeStats{Name: name}
 
 	nodeStats.CPUUsed, _ = getCpuUsage()
 
@@ -62,62 +60,6 @@ func GetStats(currentAddress string) (NodeStats, error) {
 	nodeStats.DiskTotal, nodeStats.DiskUsed, nodeStats.DiskUsedPercent, _ = getDiskUsage()
 
 	return nodeStats, nil
-}
-
-func GetAllStats(allNodes []*Node) ([]NodeStats, error) {
-	allStats := []NodeStats{}
-	chStat := make(chan NodeStats)
-
-	for _, node := range allNodes {
-
-		go func(node *Node) {
-			log.Debug("Stat for node: ", node.Address)
-
-			if err := node.Stat(); err == nil {
-				select {
-				case nStat := <-node.Result:
-					log.Debug("Received stats from: ", node.Address)
-					chStat <- nStat
-				case nErr := <-node.Error:
-					log.Error("Received error from: ", node.Address)
-					chStat <- NodeStats{
-						Address: node.Address,
-						Error:   nErr,
-					}
-				}
-			} else {
-				chStat <- NodeStats{
-					Address: node.Address,
-					Error:   err.Error(),
-				}
-			}
-		}(node)
-	}
-
-	// All nodes stats should be available within 10 secs!
-	timeout := time.After(10 * time.Second)
-	statCount := 0
-	timeoutErr := false
-
-	for {
-
-		if statCount == len(allNodes) || timeoutErr {
-			break
-		}
-
-		select {
-		case nodeStat := <-chStat:
-			log.Debug("Received stat channel: ", nodeStat)
-			allStats = append(allStats, nodeStat)
-			statCount++
-			log.Debug("Stats updated: ", allStats, statCount)
-		case <-timeout:
-			log.Warn("Get all stats timedout")
-			timeoutErr = true
-		}
-	}
-
-	return allStats, nil
 }
 
 func getCpuUsage() (float64, error) {

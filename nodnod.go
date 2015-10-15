@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
-	"github.com/mohabusama/nodnod/stats"
 	"net/http"
 	"os"
 )
@@ -29,7 +28,7 @@ var (
 	// flStatic     = flag.Bool([]string{"s", "-static"}, false, "Serve static html demo")
 
 	globalConfig = new(Configuration)
-	globalNodes  []*stats.Node
+	globalNodes  []*Node
 )
 
 func main() {
@@ -72,7 +71,8 @@ func main() {
 	go discover()
 
 	// 4. Launch server
-	http.HandleFunc("/", serveWebsocket)
+	handler := new(WebsocketHandler)
+	http.Handle("/", handler)
 
 	log.Infof("Starting NodNod websocket server: [%s : %s]", *flName, *flAddress)
 
