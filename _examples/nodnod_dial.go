@@ -49,7 +49,7 @@ func main() {
 				log.Error("Error reading json response: ", err)
 				break
 			} else {
-				log.Info("Received response from node:", mresp.Host)
+				log.Info("Received response from node: ", mresp.Host)
 				log.Info("Duration:", time.Since(now))
 				PrintStats(&mresp)
 			}

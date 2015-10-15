@@ -128,7 +128,7 @@ The next step is to run one of the `_examples` scripts
 
     $ go run nodnod_dial.go
     
-    INFO[0000] Received response from node:127.0.0.1:7070   
+    INFO[0000] Received response from node: cartman   
     INFO[0000] Duration:27.499909ms                        
     {
         "host": "cartman",
