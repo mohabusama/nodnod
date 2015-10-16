@@ -27,7 +27,7 @@ For running tests
 
 ## Stats
 
-NodNod is using [Gorilla Websocket](https://github.com/gorilla/websocket) for websocket server implementation and [gopsutil](https://github.com/shirou/gopsutil) for stats gathering. Current gathered stats are:
+NodNod is using [Gorilla Websocket](https://github.com/gorilla/websocket) for websocket server implementation and [gopsutil](https://github.com/shirou/gopsutil) for stats collecting. Current collected stats are:
 
 * CPUUsage
 * Total Disk
@@ -36,6 +36,54 @@ NodNod is using [Gorilla Websocket](https://github.com/gorilla/websocket) for we
 * Total Memory
 * Used Memory
 * Used Memory percentage
+
+## Structures
+
+### Request
+
+**NodNod** uses JSON requests over websocket connections. The request sent to **NodNod** server should include the following fields:
+
+* **type**: Integer represents the type of the request
+    - 0: stat connected node **only**.
+    - 1: stat **all** cluster nodes.
+* **statType**: Integer represents the type of stats requested.
+    - 0: ALL stats. Granular stats is not supported yet.
+
+Sample request:
+
+    {
+        "type": 1,
+        "statType": 0
+    }
+
+
+### Response
+
+Response should include the following fields
+
+* **host**: The connected host name.
+* **nodes**: Collected node(s) stats
+* **error**: Error string if any. Empty string means no error happened.
+
+Example response:
+
+    {
+        "host": "kyle",
+        "nodes": {
+            "cartman": {
+                "name": "kyle",
+                "cpuUsed": 5,
+                "diskTotal": 249769419776,
+                "diskUsed": 66792268800,
+                "diskUsedPercent": 26.741571830491146,
+                "memoryTotal": 8589934592,
+                "memoryUsed": 5699850240,
+                "memoryUsedPercent": 66.35499000549316,
+                "error": ""
+            }            
+        },
+        "error": ""
+    }
 
 ## Usage
 
