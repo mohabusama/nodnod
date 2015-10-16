@@ -43,7 +43,7 @@ NodNod is using [Gorilla Websocket](https://github.com/gorilla/websocket) for we
 
 **NodNod** uses JSON requests over websocket connections. The request sent to **NodNod** server should include the following fields:
 
-* **type**: Integer represents the type of the request
+* **type**: Integer represents the type of the request.
     - 0: stat connected node **only**.
     - 1: stat **all** cluster nodes.
 * **statType**: Integer represents the type of stats requested.
@@ -59,10 +59,10 @@ Sample request:
 
 ### Response
 
-Response should include the following fields
+Response will hold the following fields:
 
 * **host**: The connected host name.
-* **nodes**: Collected node(s) stats
+* **nodes**: Collected node(s) stats.
 * **error**: Error string if any. Empty string means no error happened.
 
 Example response:
@@ -70,7 +70,7 @@ Example response:
     {
         "host": "kyle",
         "nodes": {
-            "cartman": {
+            "kyle": {
                 "name": "kyle",
                 "cpuUsed": 5,
                 "diskTotal": 249769419776,
