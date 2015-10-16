@@ -16,6 +16,7 @@ type Client struct {
 
 	conn      *websocket.Conn
 	connected bool
+	url       url.URL
 	response  chan stats.MessageResponse
 	err       chan error
 }
@@ -33,11 +34,11 @@ func (c *Client) Connect() error {
 		return nil
 	}
 
-	u := url.URL{Scheme: "ws", Host: c.Server, Path: "/"}
+	c.url = url.URL{Scheme: "ws", Host: c.Server, Path: "/"}
 
 	dialer := websocket.Dialer{}
 
-	conn, _, err := dialer.Dial(u.String(), nil)
+	conn, _, err := dialer.Dial(c.url.String(), nil)
 	if err != nil {
 		return &ConnectionErr{err}
 	}
@@ -73,6 +74,10 @@ func (c *Client) StatAll() (stats.Stats, error) {
 // Check if client is connected.
 func (c *Client) Connected() bool {
 	return c.connected
+}
+
+func (c *Client) URL() string {
+	return c.url.String()
 }
 
 // Disconnect client from NodNod server.
