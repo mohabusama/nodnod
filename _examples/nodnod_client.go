@@ -26,6 +26,8 @@ func main() {
 		log.Fatal("Failed to connect", err)
 	}
 
+	defer nodnodClient.Disconnect()
+
 	count := 0
 
 	for {
